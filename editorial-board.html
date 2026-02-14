@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Editorial Board</title>
+
+  <style>
+    :root{
+      --bg:#fff; --fg:#111; --muted:#5b5b5b; --line:#e7e7e7; --chip:#f4f4f4;
+      --link:#0b57d0; --max:980px; --radius:16px; --shadow:0 18px 44px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;background:var(--bg);color:var(--fg)}
+    a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
+    header{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:10}
+    .wrap{max-width:var(--max);margin:0 auto;padding:18px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .crumbs{display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:13px}
+    .crumbs a{color:inherit}
+    .brand{font-weight:900;color:#111}
+
+    .search input{
+      width:min(520px, 100%);
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      outline:none;
+      font-size:14px;
+      background:#fff;
+    }
+
+    h1{margin:18px 0 8px;font-size:28px;letter-spacing:-.3px;font-weight:950}
+    .muted{color:var(--muted);font-size:12.8px;line-height:1.65}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:12px;padding:14px 0 34px}
+    .member{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff}
+    .member .name{margin:0 0 4px;font-weight:950;font-size:14.2px}
+    .member .role{margin:0 0 8px;font-size:12.8px;color:#222;font-weight:700}
+    .member .line{margin:0;color:var(--muted);font-size:12.8px;line-height:1.55}
+    .member .line b{color:#333;font-weight:700}
+    .member a{word-break:break-all}
+
+    .status{border-top:1px solid var(--line);padding:12px 0;color:var(--muted);font-size:13px;white-space:pre-wrap}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="crumbs">
+        <a href="index.html" class="brand">Rubbish</a>
+        <span>›</span>
+        <span>Editorial Board</span>
+      </div>
+      <div class="search">
+        <input id="q" type="search" placeholder="Search by name, role, affiliation, interests, ORCID" autocomplete="off">
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Editorial Board</h1>
+  <p class="muted" id="subtitle">Loading…</p>
+
+  <div id="grid" class="grid" aria-live="polite"></div>
+  <div id="status" class="status"></div>
+</main>
+
+<script>
+(() => {
+  const OWNER="shangguansuyan", REPO="rubbish", BRANCH="main";
+  const q = document.getElementById("q");
+  const grid = document.getElementById("grid");
+  const subtitle = document.getElementById("subtitle");
+  const status = document.getElementById("status");
+
+  const esc = (s)=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+  const normalizeOrcid = (s)=> {
+    const t=(s||"").trim();
+    const m=t.match(/(\d{4}-\d{4}-\d{4}-\d{3}[\dX])/i);
+    return m ? m[1] : t;
+  };
+
+  function render(list){
+    const term = (q.value||"").trim().toLowerCase();
+    const filtered = !term ? list : list.filter(m => {
+      const aff = Array.isArray(m.affiliations) ? m.affiliations.join("; ") : "";
+      return (
+        String(m.name||"").toLowerCase().includes(term) ||
+        String(m.role||"").toLowerCase().includes(term) ||
+        String(aff).toLowerCase().includes(term) ||
+        String(m.interests||"").toLowerCase().includes(term) ||
+        String(m.orcid||"").toLowerCase().includes(term)
+      );
+    });
+
+    grid.innerHTML = filtered.map(m=>{
+      const name = esc(m.name||"—");
+      const role = esc(m.role||"Editorial Board");
+      const interests = esc(m.interests||"");
+      const aff = esc((Array.isArray(m.affiliations)?m.affiliations:[]).filter(Boolean).join("; "));
+      const orcid = normalizeOrcid(m.orcid||"");
+      const orcidUrl = orcid ? `https://orcid.org/${encodeURIComponent(orcid)}` : "";
+      return `
+        <div class="member">
+          <p class="name">${name}</p>
+          <p class="role">${role}</p>
+          <p class="line"><b>Affiliations:</b> ${aff || "—"}</p>
+          ${interests ? `<p class="line"><b>Interests:</b> ${interests}</p>` : ``}
+          ${orcid ? `<p class="line"><b>ORCID:</b> <a href="${esc(orcidUrl)}" target="_blank" rel="noopener">${esc(orcid)}</a></p>` : ``}
+        </div>
+      `;
+    }).join("");
+
+    status.textContent = `${filtered.length} shown · ${list.length} total`;
+  }
+
+  async function init(){
+    subtitle.textContent = "Browse and search the full editorial board list.";
+    const raw = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/members.json?t=${Date.now()}`;
+    const res = await fetch(raw, { cache:"no-store" });
+    if(res.status === 404){
+      subtitle.textContent = "No editorial board list available.";
+      render([]);
+      return;
+    }
+    if(!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : [];
+
+    // optional sort by role then name
+    const order = ["Editor in Chief","Co-Editor in Chief","Managing Editor","Associate Editor","Editorial Board Member","Editorial Board"];
+    list.sort((a,b)=>{
+      const ra=order.indexOf(a.role||""); const rb=order.indexOf(b.role||"");
+      const pa=ra===-1?999:ra; const pb=rb===-1?999:rb;
+      if(pa!==pb) return pa-pb;
+      return String(a.name||"").localeCompare(String(b.name||""));
+    });
+
+    render(list);
+    q.addEventListener("input", ()=>render(list));
+  }
+
+  init().catch(err=>{
+    console.error(err);
+    subtitle.textContent = "Failed to load members.";
+    status.textContent = String(err.message || err);
+  });
+})();
+</script>
+</body>
+</html>
