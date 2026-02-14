@@ -3,163 +3,87 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Rubbish | Home</title>
-  <meta name="description" content="Rubbish — GitHub Pages site home." />
+  <title>Rubbish | Journal</title>
+  <meta name="description" content="Rubbish journal homepage (GitHub Pages entry)." />
   <style>
-    /* 与 journal_index.html 保持同一套视觉（为单文件部署而内置样式） */
-    :root{
-      --bg:#ffffff; --fg:#0b0f18; --muted:#5b6475; --border:#e6e9ef; --soft:#f6f7fb;
-      --brand:#0a3d91; --brand2:#0b7a75;
-      --shadow:0 8px 24px rgba(15, 23, 42, .08);
-      --radius:16px; --radius2:22px; --maxw:1160px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-    }
-    *{box-sizing:border-box}
-    body{margin:0; font-family:var(--sans); color:var(--fg); background:var(--bg); line-height:1.45}
-    a{color:inherit; text-decoration:none}
-    a:hover{text-decoration:underline}
-    .container{max-width:var(--maxw); margin:0 auto; padding:0 18px}
-    .topbar{border-bottom:1px solid var(--border); background:linear-gradient(180deg,#fff,#fbfbfe); position:sticky; top:0; z-index:1000}
-    .topbar-inner{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 0}
-    .brand{display:flex; align-items:center; gap:10px; min-width:170px}
-    .brand-mark{width:34px;height:34px;border-radius:10px;background:conic-gradient(from 220deg,var(--brand),var(--brand2),#7c3aed,var(--brand));box-shadow:0 6px 16px rgba(10,61,145,.22)}
-    .brand-title{display:flex; flex-direction:column}
-    .brand-title strong{font-size:14px; letter-spacing:.3px}
-    .brand-title span{font-size:12px; color:var(--muted)}
-    .nav{display:flex; align-items:center; gap:16px; flex-wrap:wrap; justify-content:center}
-    .nav a{font-size:13px;color:#1b2436;padding:8px 10px;border-radius:10px}
-    .nav a:hover{background:var(--soft); text-decoration:none}
-    .actions{display:flex; align-items:center; gap:10px; justify-content:flex-end; min-width:260px}
-    .btn{border:1px solid var(--border); background:#fff; color:#1b2436; padding:10px 12px; border-radius:12px; font-size:13px; display:inline-flex; align-items:center; gap:8px; cursor:pointer}
-    .btn.primary{background:linear-gradient(135deg,var(--brand),#154bb0); color:#fff; border-color:transparent}
-
-    .hero{
-      padding:26px 0 18px;
-      background:
-        radial-gradient(900px 280px at 18% 0%, rgba(10,61,145,.12), transparent 60%),
-        radial-gradient(900px 320px at 90% 20%, rgba(11,122,117,.10), transparent 58%),
-        linear-gradient(180deg, #ffffff, #fbfbfe);
-      border-bottom:1px solid var(--border);
-    }
-    .hero-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:18px; align-items:stretch}
-    .hero-card{border:1px solid var(--border); background:#fff; border-radius:var(--radius2); box-shadow:var(--shadow); overflow:hidden}
-    .hero-main{padding:18px 18px 14px}
-    .kicker{display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); background:var(--soft); padding:6px 10px; border-radius:999px; border:1px solid var(--border)}
-    .hero h1{margin:12px 0 8px; font-size:34px; line-height:1.1; letter-spacing:-.6px}
-    .hero p{margin:0 0 14px; color:var(--muted); font-size:14px; max-width:64ch}
-    .hero-ctas{display:flex; gap:10px; flex-wrap:wrap; padding:0 18px 18px}
-    .cover{position:relative; height:100%; min-height:280px; background:#0b0f18}
-    .cover img{width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.05) contrast(1.03)}
-    .cover-badge{position:absolute; left:14px; bottom:14px; background:rgba(255,255,255,.92); border:1px solid rgba(230,233,239,.9); border-radius:14px; padding:10px 12px; box-shadow:0 10px 26px rgba(0,0,0,.18)}
-    .cover-badge strong{display:block; font-size:12px}
-    .cover-badge span{display:block; font-size:12px; color:var(--muted)}
-    .section{padding:18px 0}
-    .section h2{font-size:18px; margin:0 0 10px; letter-spacing:-.2px}
-    .sub{margin:0 0 14px; color:var(--muted); font-size:13px}
-    .card{border:1px solid var(--border); border-radius:var(--radius); background:#fff; box-shadow:0 8px 18px rgba(15,23,42,.06); overflow:hidden}
-    .hd{padding:12px 14px; border-bottom:1px solid var(--border); background:linear-gradient(180deg,#fff,#fbfbfe); display:flex; align-items:center; justify-content:space-between; gap:10px}
-    .hd strong{font-size:13px}
-    .bd{padding:12px 14px}
-    .list{display:flex; flex-direction:column; gap:10px}
-    .item{border:1px dashed var(--border); border-radius:14px; padding:10px 12px; background:#fff}
-    .item .t{font-size:13px; color:#1b2436; display:flex; align-items:center; justify-content:space-between; gap:10px}
-    .item .t em{color:var(--muted); font-style:normal; font-size:12px}
-    .item .m{margin-top:6px; font-size:12px; color:var(--muted)}
-    .empty{color:var(--muted); font-style:italic}
-
-    footer{padding:26px 0 34px; color:var(--muted)}
-    .foot{border-top:1px solid var(--border); padding-top:16px; font-size:12px}
-    .kbd{font-family:var(--mono); border:1px solid var(--border); background:var(--soft); border-bottom-color:#d6dae5; padding:2px 6px; border-radius:8px; font-size:11px}
-
-    @media (max-width: 980px){ .hero-grid{grid-template-columns:1fr} .actions{min-width:0} }
-    @media (max-width: 560px){ .nav{display:none} .hero h1{font-size:28px} }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.45;color:#0b0f18;background:#fff}
+    .wrap{max-width:1100px;margin:0 auto;padding:22px 18px}
+    .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #e6e9ef}
+    .brand{display:flex;align-items:center;gap:10px}
+    .mark{width:34px;height:34px;border-radius:10px;background:conic-gradient(from 220deg,#0a3d91,#0b7a75,#7c3aed,#0a3d91);box-shadow:0 6px 16px rgba(10,61,145,.22)}
+    .brand strong{font-size:14px}
+    .brand span{font-size:12px;color:#5b6475;display:block}
+    .btn{border:1px solid #e6e9ef;background:#fff;padding:10px 12px;border-radius:12px;font-size:13px;text-decoration:none;color:#0b0f18}
+    .btn.primary{background:linear-gradient(135deg,#0a3d91,#154bb0);border-color:transparent;color:#fff}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:stretch;padding:18px 0}
+    .card{border:1px solid #e6e9ef;border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(15,23,42,.08);background:#fff}
+    .pad{padding:16px 16px 14px}
+    h1{margin:8px 0 8px;font-size:34px;letter-spacing:-.6px}
+    p{margin:0 0 12px;color:#5b6475;font-size:14px}
+    .k{display:inline-flex;gap:8px;align-items:center;font-size:12px;color:#5b6475;background:#f6f7fb;border:1px solid #e6e9ef;border-radius:999px;padding:6px 10px}
+    .cover{position:relative;min-height:280px;background:#0b0f18}
+    .cover img{width:100%;height:100%;object-fit:cover;display:block}
+    .badge{position:absolute;left:14px;bottom:14px;background:rgba(255,255,255,.92);border:1px solid rgba(230,233,239,.9);border-radius:14px;padding:10px 12px;box-shadow:0 10px 26px rgba(0,0,0,.18)}
+    .badge strong{display:block;font-size:12px}
+    .badge span{display:block;font-size:12px;color:#5b6475}
+    .row{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 16px}
+    .note{margin-top:10px;font-size:12px;color:#5b6475}
+    .note code{background:#f6f7fb;border:1px solid #e6e9ef;border-bottom-color:#d6dae5;border-radius:8px;padding:2px 6px}
+    @media (max-width: 920px){.hero{grid-template-columns:1fr}}
   </style>
 </head>
-
 <body>
-<header class="topbar" role="banner">
-  <div class="container topbar-inner">
-    <a class="brand" href="#" aria-label="Rubbish home">
-      <div class="brand-mark" aria-hidden="true"></div>
-      <div class="brand-title">
-        <strong>Rubbish</strong>
-        <span>Journal</span>
+  <div class="wrap">
+    <div class="bar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <strong>Rubbish</strong>
+          <span>Journal · GitHub Pages</span>
+        </div>
       </div>
-    </a>
-
-    <nav class="nav" aria-label="Primary">
-      <a href="#home">Home</a>
-      <a href="#latest">Latest</a>
-      <a href="#journals">Journals</a>
-      <a href="#authors">For Authors</a>
-    </nav>
-
-    <div class="actions" aria-label="Actions">
-      <a class="btn" href="https://github.com/shangguansuyan/rubbish" aria-label="Open source repository">Source repo</a>
-      <a class="btn primary" href="#authors" aria-label="Submit manuscript">Submit</a>
-    </div>
-  </div>
-</header>
-
-<section id="home" class="hero" aria-label="Hero">
-  <div class="container hero-grid">
-    <div class="hero-card">
-      <div class="hero-main">
-        <div class="kicker"><span aria-hidden="true">●</span><span>GitHub Pages</span><span class="kbd">rubbish.github.io</span></div>
-        <h1>Rubbish</h1>
-        <p>
-          这是站点入口页（index.html）。正文内容保持 Nature-like 架构；文章标题不编写：无内容处显示为空或“（空）”。
-        </p>
-      </div>
-      <div class="hero-ctas">
-        <!-- 站点首页可直接跳到“完整主页模板”（源仓库） -->
-        <a class="btn primary" href="https://shangguansuyan.github.io/rubbish/" title="如果你给 rubbish 仓库也启用 Pages，这里可用">
-          Project page
-        </a>
-        <a class="btn" href="https://github.com/shangguansuyan/rubbish/blob/main/journal_index.html">Template HTML</a>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <a class="btn" href="journal_index.html">Open journal_index.html</a>
+        <a class="btn primary" href="journal_index.html#authors">Submit</a>
       </div>
     </div>
 
-    <aside class="hero-card cover" aria-label="Journal cover">
-      <!-- 默认从 rubbish 仓库引用封面图（无需在本仓库重复放图） -->
-      <img id="coverImg" alt="Rubbish journal cover" />
-      <div class="cover-badge">
-        <strong>Cover</strong>
-        <span class="small" id="coverLabel"></span>
-      </div>
-    </aside>
-  </div>
-</section>
-
-<main class="container" role="main">
-  <section id="latest" class="section" aria-label="Latest">
-    <h2>Latest</h2>
-    <p class="sub">不编文章标题：占位条目仅用于布局示例。</p>
-    <div class="card">
-      <div class="hd"><strong>Research</strong><a href="#latest" style="font-size:12px;color:var(--brand)">View all</a></div>
-      <div class="bd">
-        <div class="list">
-          <div class="item">
-            <div class="t"><span class="empty">（空）</span><em>Article</em></div>
-            <div class="m">Authors: <span class="empty">（空）</span> · Published: <span class="empty">（空）</span></div>
+    <div class="hero">
+      <div class="card">
+        <div class="pad">
+          <div class="k">● Pages entry · index.html</div>
+          <h1>Rubbish</h1>
+          <p>
+            这是 GitHub Pages 的默认入口页（<code>index.html</code>）。
+            点击右上角按钮进入完整主页（<code>journal_index.html</code>）。
+          </p>
+          <div class="row">
+            <a class="btn primary" href="journal_index.html">Enter Journal Home</a>
+            <a class="btn" href="journal_index.html#network">Browse Journals</a>
+            <a class="btn" href="journal_index.html#latest">Latest</a>
           </div>
-          <div class="item">
-            <div class="t"><span class="empty">（空）</span><em>Letter</em></div>
-            <div class="m">Authors: <span class="empty">（空）</span> · Published: <span class="empty">（空）</span></div>
+          <div class="note">
+            说明：Pages 仓库未包含封面图，因此本页封面图来自 <code>rubbish</code> 仓库的 Raw 资源链接。
+            若你后续把图片也复制到 Pages 仓库，可把图片地址改为本地文件名。
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section id="journals" class="section" aria-label="Journals">
-    <h2>Journals</h2>
-    <p class="sub">站点入口页只放一个简版子刊列表；完整版请在源仓库 journal_index.html 中维护。</p>
-    <div class="card">
-      <div class="hd"><strong>Rubbish Journals</strong><a href="https://github.com/shangguansuyan/rubbish/blob/main/journal_index.html" style="font-size:12px;color:var(--brand)">Open full layout</a></div>
-      <div class="bd">
-        <div class="list">
-          <div class="item"><div class="t"><span>Rubbish</span><em>Flagship</em></div><div class="m"><span class="empty">（空）</span></div></div>
-          <div class="item"><div class="t"><span>Rubbish Communications</span><em>Multidisciplinary</em></div><div class="m"><span class="empty">（空）</span></div></div>
-          <div class="item"><div class="t"><span>Rubbish Methods</span><em>Methods</em></div><div class="m"><span class="empty">（空）</span
+      <div class="card cover" aria-label="Cover">
+        <img
+          src="https://raw.githubusercontent.com/shangguansuyan/rubbish/main/g3pip2k-1771080298817-192c9531.jpg"
+          alt="Rubbish journal cover"
+        />
+        <div class="badge">
+          <strong>Cover</strong>
+          <span>Loaded from rubbish repo (raw)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      GitHub Pages 规则：访问 <code>https://shangguansuyan.github.io/</code> 默认加载根目录的 <code>index.html</code>。
+    </div>
+  </div>
+</body>
+</html>
